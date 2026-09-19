@@ -42,6 +42,12 @@ public class ActorsController(AppDbContext db, IImageService images) : Controlle
         if (actor is null)
             return NotFound();
 
+        if (await db.Set<MovieActor>().AnyAsync(x => x.ActorId == id))
+        {
+            TempData["Error"] = "Delete or remove this actor from the movies first.";
+            return RedirectToAction(nameof(Index));
+        }
+
         images.Delete(actor.ImageUrl);
         db.Actors.Remove(actor);
         await db.SaveChangesAsync();
