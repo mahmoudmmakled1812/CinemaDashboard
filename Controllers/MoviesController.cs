@@ -158,7 +158,8 @@ public class MoviesController(AppDbContext db, IImageService images) : Controlle
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteImage(int id, int movieId)
     {
-        var image = await db.MovieImages.FindAsync(id);
+        var image = await db.MovieImages
+            .FirstOrDefaultAsync(x => x.Id == id && x.MovieId == movieId);
 
         if (image is not null)
         {
