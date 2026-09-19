@@ -16,6 +16,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         modelBuilder.Entity<MovieActor>().HasKey(x => new { x.MovieId, x.ActorId });
         modelBuilder.Entity<Movie>().Property(x => x.Price).HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<MovieActor>().HasOne(x => x.Movie).WithMany(x => x.MovieActors).HasForeignKey(x => x.MovieId).OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<MovieActor>().HasOne(x => x.Actor).WithMany(x => x.MovieActors).HasForeignKey(x => x.ActorId).OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<MovieImage>().HasOne(x => x.Movie).WithMany(x => x.Images).HasForeignKey(x => x.MovieId).OnDelete(DeleteBehavior.Cascade);
         base.OnModelCreating(modelBuilder);
     }
 }
