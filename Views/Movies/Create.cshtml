@@ -1,4 +1,12 @@
 @model CinemaDashboard.ViewModels.MovieFormViewModel
-@{ ViewData["Title"] = "Add movie"; }
-<h1>Add movie</h1><partial name="_Form" model="Model" />
+@{
+    ViewData["Title"] = "Add movie";
+}
 
+<h1>Add movie</h1>
+
+<partial name="_Form" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
