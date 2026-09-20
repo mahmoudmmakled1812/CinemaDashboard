@@ -1,10 +1,12 @@
 using CinemaDashboard.Data;
 using CinemaDashboard.Models;
 using CinemaDashboard.Services;
-using CinemaDashboard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CinemaDashboard.Controllers;
 

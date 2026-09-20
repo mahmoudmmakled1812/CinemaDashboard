@@ -26,7 +26,11 @@ public class ActorsController(AppDbContext db, IImageService images) : Controlle
             return View("Index", await db.Actors.ToListAsync());
         }
 
-        actor.ImageUrl = await images.SaveAsync(image, "actors");
+        if (image != null && image.Length > 0)
+        {
+            actor.ImageUrl = await images.SaveAsync(image, "actors");
+        }
+
         db.Actors.Add(actor);
         await db.SaveChangesAsync();
 
@@ -42,10 +46,22 @@ public class ActorsController(AppDbContext db, IImageService images) : Controlle
         if (actor is null)
             return NotFound();
 
-        images.Delete(actor.ImageUrl);
+        if (!string.IsNullOrEmpty(actor.ImageUrl))
+        {
+            try
+            {
+                images.Delete(actor.ImageUrl);
+            }
+            catch
+            {
+            }
+        }
+
         db.Actors.Remove(actor);
         await db.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
+
+    // public DbSet<Actor> Actors { get; set; }
 }

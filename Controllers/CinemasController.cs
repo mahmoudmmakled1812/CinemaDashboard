@@ -1,13 +1,23 @@
 using CinemaDashboard.Data;
 using CinemaDashboard.Models;
 using CinemaDashboard.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CinemaDashboard.Controllers;
 
-public class CinemasController(AppDbContext db, IImageService images) : Controller
+public class CinemasController : Controller
 {
+    private readonly AppDbContext db;
+    private readonly IImageService images;
+
+    public CinemasController(AppDbContext db, IImageService images)
+    {
+        this.db = db;
+        this.images = images;
+    }
+
     public async Task<IActionResult> Index()
     {
         var cinemas = await db.Cinemas

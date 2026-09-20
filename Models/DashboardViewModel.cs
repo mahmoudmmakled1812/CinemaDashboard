@@ -1,4 +1,4 @@
-namespace CinemaDashboard.ViewModels;
+namespace CinemaDashboard.Models;
 
 public record DashboardViewModel(
     int Categories,

@@ -1,0 +1,62 @@
+@model CinemaDashboard.ViewModels.LoginVM
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-12 col-md-8 col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-lg-5">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary text-white mb-3" style="width:64px;height:64px;">
+                        <i class="fas fa-film fa-2x"></i>
+                    </div>
+                    <h2 class="mb-1">Welcome back</h2>
+                    <p class="text-muted mb-0">Sign in to your Cinema Dashboard account.</p>
+                </div>
+
+                <form asp-action="Login" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="EmailOrUserName" class="form-label"></label>
+                        <input asp-for="EmailOrUserName" class="form-control form-control-lg" autocomplete="username" autofocus />
+                        <span asp-validation-for="EmailOrUserName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control form-control-lg" autocomplete="current-password" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input asp-for="Remember" class="form-check-input" />
+                            <label asp-for="Remember" class="form-check-label">Remember me</label>
+                        </div>
+                        <a asp-action="ForgetPassword" class="small">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <span class="text-muted">Don't have an account?</span>
+                    <a asp-action="Register" class="fw-semibold">Create one</a>
+                </div>
+                <div class="text-center mt-2">
+                    <a asp-action="ResendConfirmation" class="small text-muted">Resend confirmation email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

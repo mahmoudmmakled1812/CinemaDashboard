@@ -1,21 +1,57 @@
-using CinemaDashboard.Models;
+﻿using CinemaDashboard.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CinemaDashboard.Data;
-
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+namespace CinemaDashboard.Data
 {
-    public DbSet<Category> Categories => Set<Category>();
-    public DbSet<Cinema> Cinemas => Set<Cinema>();
-    public DbSet<Actor> Actors => Set<Actor>();
-
-    public DbSet<Movie> Movies => Set<Movie>();
-    public DbSet<MovieImage> MovieImages => Set<MovieImage>();
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
-        modelBuilder.Entity<MovieActor>().HasKey(x => new { x.MovieId, x.ActorId });
-        modelBuilder.Entity<Movie>().Property(x => x.Price).HasColumnType("decimal(18,2)");
-        base.OnModelCreating(modelBuilder);
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Actor> Actors { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Cinema> Cinemas { get; set; }
+        public DbSet<MovieImage> MovieImages { get; set; }
+        public DbSet<ApplicationUserOTP> ApplicationUserOTPs { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<MovieActor>()
+                .HasKey(ma => new { ma.MovieId, ma.ActorId });
+
+            modelBuilder.Entity<MovieActor>()
+                .HasOne(ma => ma.Movie)
+                .WithMany(m => m.MovieActors)
+                .HasForeignKey(ma => ma.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MovieActor>()
+                .HasOne(ma => ma.Actor)
+                .WithMany(a => a.MovieActors)
+                .HasForeignKey(ma => ma.ActorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MovieActor>()
+                .HasKey(ma => new { ma.MovieId, ma.ActorId });
+
+            modelBuilder.Entity<ApplicationUserOTP>()
+                .HasOne(o => o.ApplicationUser)
+                .WithMany()
+                .HasForeignKey(o => o.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ApplicationUserOTP>()
+                .HasIndex(o => o.ApplicationUserId);
+
+            modelBuilder.Entity<Movie>()
+               .Property(m => m.Price)
+               .HasPrecision(18, 2);
+        }
     }
 }

@@ -1,7 +1,6 @@
-using CinemaDashboard.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace CinemaDashboard.ViewModels;
+namespace CinemaDashboard.Models;
 
 public class MovieFormViewModel
 {
