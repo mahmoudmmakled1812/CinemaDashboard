@@ -1,0 +1,7 @@
+@model IEnumerable<CinemaDashboard.Models.FavoriteItem>
+@{ ViewData["Title"] = "Favorite items"; }
+<div class="d-flex justify-content-between align-items-center mb-4"><h2 class="mb-0">Favorite items</h2><a asp-controller="Home" class="btn btn-outline-primary">Browse movies</a></div>
+<div class="row g-4">@foreach (var item in Model) { var movie = item.Movie!;
+<div class="col-md-6"><div class="card h-100"><div class="card-body"><h5>@movie.Name</h5><p class="text-muted mb-3">@movie.Cinema?.Name · @movie.ShowDateTime.ToString("f")</p><div class="d-flex gap-2"><a asp-controller="Bookings" asp-action="SelectSeats" asp-route-movieId="@movie.Id" class="btn btn-primary">Book</a><form asp-action="Toggle" method="post"><input type="hidden" name="movieId" value="@movie.Id" /><button class="btn btn-outline-danger">Remove</button></form></div></div></div></div> }
+</div>
+@if (!Model.Any()) { <div class="alert alert-light border">Your favorite list is empty.</div> }

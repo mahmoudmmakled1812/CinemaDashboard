@@ -22,6 +22,12 @@ public class Movie
 
     public string? MainImageUrl { get; set; }
 
+    [Range(1, 30)]
+    public int SeatRows { get; set; } = 10;
+
+    [Range(1, 30)]
+    public int SeatsPerRow { get; set; } = 10;
+
     [Range(1, int.MaxValue)]
     public int CategoryId { get; set; }
 
@@ -35,4 +41,7 @@ public class Movie
     public ICollection<MovieImage> Images { get; set; } = [];
 
     public ICollection<MovieActor> MovieActors { get; set; } = [];
+
+    public ICollection<FavoriteItem> FavoriteItems { get; set; } = [];
+    public ICollection<Order> Orders { get; set; } = [];
 }

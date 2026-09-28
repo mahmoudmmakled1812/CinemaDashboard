@@ -7,9 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using CinemaDashboard.Constants;
 
 namespace CinemaDashboard.Controllers;
 
+[Authorize(Roles = $"{RoleConstants.ADMIN},{RoleConstants.SUPER_ADMIN}")]
 public class MoviesController(AppDbContext db, IImageService images) : Controller
 {
     public async Task<IActionResult> Index()

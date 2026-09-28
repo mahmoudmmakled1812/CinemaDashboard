@@ -23,6 +23,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
     options.Password.RequiredLength = 8;
     options.Password.RequiredUniqueChars = 1;
+    options.Password.RequireNonAlphanumeric = false;
 
     options.Lockout.MaxFailedAccessAttempts = 6;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
@@ -47,6 +48,17 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromDays(14);
     options.SlidingExpiration = true;
+    options.Events.OnRedirectToLogin = context =>
+    {
+        if (context.Request.Path.StartsWithSegments("/Admin", StringComparison.OrdinalIgnoreCase))
+        {
+            context.Response.Redirect("/Identity/Account/AccessDenied");
+            return Task.CompletedTask;
+        }
+
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
 });
 
 var app = builder.Build();
@@ -89,6 +101,8 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 await SeedRolesAsync(app);
+await SeedAdminAccountsAsync(app);
+await SeedDemoDataAsync(app);
 
 app.Run();
 
@@ -122,4 +136,34 @@ static async Task SeedRolesAsync(WebApplication app)
             }
         }
     }
+}
+
+static async Task SeedDemoDataAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DemoDataSeeder.SeedAsync(dbContext);
+}
+
+static async Task SeedAdminAccountsAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    await EnsureAdminAsync(userManager, "admin", "admin@cinemadashboard.local", "Mahmoud123", RoleConstants.ADMIN, "Cinema", "Admin");
+    await EnsureAdminAsync(userManager, "superadmin", "superadmin@cinemadashboard.local", "Mahmoud12", RoleConstants.SUPER_ADMIN, "Cinema", "Super Admin");
+}
+
+static async Task EnsureAdminAsync(UserManager<ApplicationUser> userManager, string userName, string email, string password, string role, string firstName, string lastName)
+{
+    var user = await userManager.FindByNameAsync(userName);
+    if (user is null)
+    {
+        user = new ApplicationUser { UserName = userName, Email = email, EmailConfirmed = true, FirstName = firstName, LastName = lastName, Address = "Cinema Dashboard" };
+        var result = await userManager.CreateAsync(user, password);
+        if (!result.Succeeded) throw new InvalidOperationException(string.Join(", ", result.Errors.Select(x => x.Description)));
+    }
+
+    if (!await userManager.IsInRoleAsync(user, role))
+        await userManager.AddToRoleAsync(user, role);
 }

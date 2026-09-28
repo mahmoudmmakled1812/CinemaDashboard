@@ -2,9 +2,12 @@ using CinemaDashboard.Data;
 using CinemaDashboard.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using CinemaDashboard.Constants;
 
 namespace CinemaDashboard.Controllers;
 
+[Authorize(Roles = $"{RoleConstants.ADMIN},{RoleConstants.SUPER_ADMIN}")]
 public class CategoriesController(AppDbContext db) : Controller
 {
     public async Task<IActionResult> Index()

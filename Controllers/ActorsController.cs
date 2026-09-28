@@ -3,9 +3,12 @@ using CinemaDashboard.Models;
 using CinemaDashboard.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using CinemaDashboard.Constants;
 
 namespace CinemaDashboard.Controllers;
 
+[Authorize(Roles = $"{RoleConstants.ADMIN},{RoleConstants.SUPER_ADMIN}")]
 public class ActorsController(AppDbContext db, IImageService images) : Controller
 {
     public async Task<IActionResult> Index()

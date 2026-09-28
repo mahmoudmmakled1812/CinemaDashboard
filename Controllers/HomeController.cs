@@ -11,16 +11,13 @@ public class HomeController(AppDbContext db) : Controller
 {
     public async Task<IActionResult> Index()
     {
-        int movies = await db.Movies.CountAsync();
-        var dashboard = new DashboardViewModel(
-      await db.Categories.CountAsync(),
-      await db.Cinemas.CountAsync(),
-      movies,
-      await db.Actors.CountAsync(),
-      await db.Movies.CountAsync(x => x.IsAvailable)
-       );
+        if (!User.IsInRole(CinemaDashboard.Constants.RoleConstants.ADMIN) &&
+            !User.IsInRole(CinemaDashboard.Constants.RoleConstants.SUPER_ADMIN))
+        {
+            return RedirectToAction("Index", "Home", new { area = CinemaDashboard.Constants.AreaConstants.CUSTOMER_AREA });
+        }
 
-        return View("Dashboard", dashboard);
+        return RedirectToAction("Index", "Home", new { area = CinemaDashboard.Constants.AreaConstants.ADMIN_AREA });
     }
 
     public IActionResult Privacy()

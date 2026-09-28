@@ -4,9 +4,12 @@ using CinemaDashboard.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using CinemaDashboard.Constants;
 
 namespace CinemaDashboard.Controllers;
 
+[Authorize(Roles = $"{RoleConstants.ADMIN},{RoleConstants.SUPER_ADMIN}")]
 public class CinemasController : Controller
 {
     private readonly AppDbContext db;

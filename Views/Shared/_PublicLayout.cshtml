@@ -1,0 +1,43 @@
+@using CinemaDashboard.Constants
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · Cinema</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/falcon/public/assets/css/theme.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="public-body">
+    <header class="public-navbar">
+        <div class="container d-flex align-items-center justify-content-between gap-3">
+            <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="public-brand"><span><i class="fas fa-film"></i></span>Cinema</a>
+            <nav class="d-none d-md-flex align-items-center gap-4 public-links"><a asp-area="Customer" asp-controller="Home" asp-action="Index">Now showing</a><a asp-area="Customer" asp-controller="Home" asp-action="Index" asp-fragment="movies">Movies</a></nav>
+            <div class="d-flex align-items-center gap-2">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    @if (User.IsInRole(RoleConstants.CUSTOMER))
+                    {
+                        <a asp-area="Customer" asp-controller="Favorites" asp-action="Index" class="btn btn-light btn-sm public-icon-link" title="Favorites"><i class="far fa-heart"></i></a>
+                        <a asp-area="Customer" asp-controller="Orders" asp-action="Index" class="btn btn-light btn-sm">My bookings</a>
+                    }
+                    <form asp-area="Identity" asp-controller="Account" asp-action="Logout" method="post">@Html.AntiForgeryToken()<button class="btn btn-outline-primary btn-sm">Log out</button></form>
+                }
+                else
+                {
+                    <a asp-area="Identity" asp-controller="Account" asp-action="Login" class="btn btn-link text-decoration-none">Log in</a>
+                    <a asp-area="Identity" asp-controller="Account" asp-action="Register" class="btn btn-primary rounded-pill px-3">Create account</a>
+                }
+            </div>
+        </div>
+    </header>
+    <main class="public-main container"><partial name="_NotificationPartial" />@RenderBody()</main>
+    <footer class="public-footer"><div class="container d-flex flex-wrap justify-content-between gap-2"><span>© @DateTime.Now.Year Cinema</span><span>Choose your movie. Reserve your seat.</span></div></footer>
+    <script src="~/falcon/public/vendors/fontawesome/all.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
